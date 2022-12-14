@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-  baseUrl := "http://localhost:5000/"
+  baseUrl := "http://localhost:8080/"
   response, err := getResponse(baseUrl)
   if err != nil {
     panic(err)
