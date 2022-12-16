@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 
   db, err := gormConnect()
@@ -25,7 +23,12 @@ func main() {
     panic(err)
   }
 
-  for _, item := range items {
-    fmt.Println(item)
+  //for _, item := range items {
+  //  fmt.Println(item)
+  //}
+
+  err = registerCurrentData(items, db)
+  if err != nil {
+    panic(err)
   }
 }
