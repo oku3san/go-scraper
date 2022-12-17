@@ -31,4 +31,9 @@ func main() {
   if err != nil {
     panic(err)
   }
+
+  err = updateItemMaster(db)
+  if err != nil {
+    panic(err)
+  }
 }
