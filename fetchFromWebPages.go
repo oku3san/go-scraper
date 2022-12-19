@@ -54,3 +54,36 @@ func getList(response *http.Response) ([]Item, error) {
 
   return items, nil
 }
+
+func fetchDetailPages(items []ItemMaster) ([]ItemMaster, error) {
+  parsePage := func(response *http.Response, item ItemMaster) (ItemMaster, error) {
+    body := response.Body
+    doc, err := goquery.NewDocumentFromReader(body)
+    if err != nil {
+      return ItemMaster{}, fmt.Errorf("get detail pages document body error %w", err)
+    }
+
+    item.Description = doc.Find("table tr:nth-of-type(2) td:nth-of-type(2)").Text()
+    return item, nil
+  }
+
+  var updatedItems []ItemMaster
+
+  for _, item := range items {
+    response, err := getResponse(item.Url)
+    if err != nil {
+      return nil, fmt.Errorf("fetch detail page body error: %w", err)
+    }
+
+    currentIem, err := parsePage(response, item)
+    if err != nil {
+      return nil, fmt.Errorf("parse detail page content error: %w", err)
+    }
+
+    if !item.equals(currentIem) {
+      updatedItems = append(updatedItems, currentIem)
+    }
+  }
+
+  return updatedItems, nil
+}

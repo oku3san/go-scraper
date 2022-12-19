@@ -36,4 +36,19 @@ func main() {
   if err != nil {
     panic(err)
   }
+
+  var updateChkItems []ItemMaster
+  updateChkItems, err = getItemMasters(db)
+  if err != nil {
+    panic(err)
+  }
+
+  var updatedItems []ItemMaster
+  updatedItems, err = fetchDetailPages(updateChkItems)
+  if err != nil {
+    panic(err)
+  }
+  if err = registerDetails(updatedItems, db); err != nil {
+    panic(err)
+  }
 }
