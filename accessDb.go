@@ -93,7 +93,10 @@ func getItemMasters(db *gorm.DB) ([]ItemMaster, error) {
 func registerDetails(items []ItemMaster, db *gorm.DB) error {
   for _, item := range items {
     if err := db.Model(&item).Updates(ItemMaster{
-      Description: item.Description}).Error; err != nil {
+      Description:         item.Description,
+      ImageLastModifiedAt: item.ImageLastModifiedAt,
+      PdfLastModifiedAt:   item.PdfLastModifiedAt,
+    }).Error; err != nil {
       return fmt.Errorf("update item detail info error: %w", err)
     }
     fmt.Printf("Detail page is updated: %s\n", item.Url)

@@ -7,6 +7,7 @@ import (
   "net/url"
   "strconv"
   "strings"
+  "time"
 )
 
 func getResponse(url string) (*http.Response, error) {
@@ -64,7 +65,23 @@ func fetchDetailPages(items []ItemMaster) ([]ItemMaster, error) {
     }
 
     item.Description = doc.Find("table tr:nth-of-type(2) td:nth-of-type(2)").Text()
-    return item, nil
+
+    href, exists := doc.Find("atble tr:nth-of-type(1) td:nth-of-type(1) img").Attr("src")
+    if exists {
+      isUpdated, currentLastModified := checkFileUpdated(baseUrl+href, item.ImageLastModifiedAt)
+      if isUpdated {
+        item.ImageLastModifiedAt = currentLastModified
+      }
+
+      href, exists = doc.Find("table tr:nth-of-type(3) td:nth-of-type(2) a").Attr("href")
+      if exists {
+        isUpdated, currentLastModified = checkFileUpdated(baseUrl+href, item.PdfLastModifiedAt)
+        if isUpdated {
+          item.PdfLastModifiedAt = currentLastModified
+        }
+      }
+    }
+    return item, err
   }
 
   var updatedItems []ItemMaster
@@ -86,4 +103,26 @@ func fetchDetailPages(items []ItemMaster) ([]ItemMaster, error) {
   }
 
   return updatedItems, nil
+}
+
+func checkFileUpdated(fileURL string, lastModified time.Time) (isUpdated bool, currentLastModified time.Time) {
+  getLastModified := func(fileURL string) (time.Time, error) {
+    res, err := http.Head(fileURL)
+    if err != nil {
+      return time.Unix(0, 0), err
+    }
+    lastModified, err := time.Parse("Mon, 02 Jan 2006 15:04:05 MST", res.Header.Get("Last-Modified"))
+    return lastModified, err
+  }
+
+  currentLastModified, err := getLastModified(fileURL)
+  if err != nil {
+    return false, currentLastModified
+  }
+
+  if currentLastModified.After(lastModified) {
+    return true, currentLastModified
+  } else {
+    return false, lastModified
+  }
 }

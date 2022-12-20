@@ -19,7 +19,9 @@ type LatestItem struct {
 type ItemMaster struct {
   gorm.Model
   Item
-  Description string
+  Description         string
+  ImageLastModifiedAt time.Time
+  PdfLastModifiedAt   time.Time
 }
 
 func (ItemMaster) TableName() string {
