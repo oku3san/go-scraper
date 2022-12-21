@@ -34,10 +34,6 @@ func (ItemMaster) TableName() string {
 }
 
 func (i ItemMaster) equals(target ItemMaster) bool {
-  return i.Description == target.Description
-}
-
-func (i ItemMaster) equals(target ItemMaster) bool {
   return i.Description == target.Description &&
     i.ImageURL == target.ImageURL &&
     i.ImageLastModifiedAt == target.ImageLastModifiedAt &&

@@ -1,5 +1,10 @@
 package main
 
+import (
+  "os"
+  "path/filepath"
+)
+
 func main() {
 
   db, err := gormConnect()
@@ -44,7 +49,10 @@ func main() {
   }
 
   var updatedItems []ItemMaster
-  updatedItems, err = fetchDetailPages(updateChkItems)
+  currentDirectory, _ := os.Getwd()
+  downloadBasePath := filepath.Join(currentDirectory, "work", "downloadFiles")
+
+  updatedItems, err = fetchDetailPages(updateChkItems, downloadBasePath)
   if err != nil {
     panic(err)
   }
