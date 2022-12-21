@@ -56,7 +56,7 @@ func main() {
   if err != nil {
     panic(err)
   }
-  if err = registerDetails(updatedItems, db); err != nil {
+  if err = registerDetails(db, updatedItems); err != nil {
     panic(err)
   }
 }
