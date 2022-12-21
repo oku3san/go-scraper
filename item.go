@@ -2,6 +2,7 @@ package main
 
 import (
   "gorm.io/gorm"
+  "path/filepath"
   "time"
 )
 
@@ -44,4 +45,12 @@ func (i ItemMaster) equals(target ItemMaster) bool {
     i.PdfURL == target.PdfURL &&
     i.PdfLastModifiedAt == target.PdfLastModifiedAt &&
     i.PdfDownloadPath == target.PdfDownloadPath
+}
+
+func (i ItemMaster) ImageFileName() string {
+  return filepath.Base(i.ImageURL)
+}
+
+func (i ItemMaster) PdfFileName() string {
+  return filepath.Base(i.PdfURL)
 }
